@@ -312,7 +312,7 @@ Public Class PageDownloadModify
         TextSelectName.ValidateRules = New ObjectModel.Collection(Of Validate) From {
             New ValidateFolderName(McFolderSelected & "versions", IgnoreList:=New List(Of String) From {OriginalName})}
         '修改页 UI
-        CardMinecraft.Visibility = If(RestrictMcDownload, Visibility.Collapsed, Visibility.Visible)
+        CardMinecraft.Visibility = Visibility.Visible
         BtnBack.Visibility = Visibility.Collapsed
         ImgLogo.Margin = New Thickness(15, 15, 0, 0)
         TextSelectName.Margin = New Thickness(56, 16, 16, 0)

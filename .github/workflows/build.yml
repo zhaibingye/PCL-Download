@@ -4,10 +4,12 @@ on:
     paths:
       - 'Plain Craft Launcher 2/**'
       - '.github/workflows/**'
+      - 'tests/**'
   pull_request:
     paths:
       - 'Plain Craft Launcher 2/**'
       - '.github/workflows/**'
+      - 'tests/**'
   workflow_dispatch:
 
 jobs:
@@ -25,6 +27,9 @@ jobs:
       with:
         fetch-depth: 1
         submodules: true
+
+    - name: Check Download Entry Points
+      run: python -m unittest discover -s tests -v
 
     - name: Set Describe
       shell: bash
