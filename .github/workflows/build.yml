@@ -4,13 +4,18 @@ on:
     paths:
       - 'Plain Craft Launcher 2/**'
       - '.github/workflows/**'
+      - '.github/scripts/**'
       - 'tests/**'
   pull_request:
     paths:
       - 'Plain Craft Launcher 2/**'
       - '.github/workflows/**'
+      - '.github/scripts/**'
       - 'tests/**'
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -55,19 +60,42 @@ jobs:
         Set-Location ${{ GITHUB.WORKSPACE }}
 
 
-    - name: Replace
+    - name: Set Commit Hash
       run: |
-        (gc "Plain Craft Launcher 2\Modules\ModSecret.vb") -replace 'Public CurseForgeAPIKey As String = If(Environment.GetEnvironmentVariable("PCL_CURSEFORGE_API_KEY"), "")', 'Public CurseForgeAPIKey As String = If(Environment.GetEnvironmentVariable("PCL_CURSEFORGE_API_KEY"), "${{ secrets.CURSEFORGE_API_KEY }}")' | Out-File "Plain Craft Launcher 2\Modules\ModSecret.vb"
-        (gc "Plain Craft Launcher 2\Modules\Base\ModBase.vb") -replace 'Public Const CommitHash As String = ""', 'Public Const CommitHash As String = "${{ github.sha }}"' | Out-File "Plain Craft Launcher 2\Modules\Base\ModBase.vb"
+        $path = "Plain Craft Launcher 2\Modules\Base\ModBase.vb"
+        $source = [IO.File]::ReadAllText($path).Replace('Public Const CommitHash As String = ""', ('Public Const CommitHash As String = "' + $env:GITHUB_SHA + '"'))
+        [IO.File]::WriteAllText($path, $source, [Text.UTF8Encoding]::new($false))
         
     - name: Restore NuGet Packages
       run: dotnet restore PCLCS\PCLCS.csproj
 
+    # Only trusted default-branch builds receive credentials. Pull requests and
+    # other branches compile the empty public defaults and use runtime overrides.
+    - name: Generate Private Build Credentials
+      if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+      env:
+        PCL_MS_CLIENT_ID: ${{ secrets.PCL_MS_CLIENT_ID }}
+        PCL_CF_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+      run: python .github/scripts/build_credentials.py
+
     - name: Build
-      run: msbuild "Plain Craft Launcher 2\Plain Craft Launcher 2.vbproj" -p:Configuration=${{ matrix.configuration }}
+      run: msbuild "Plain Craft Launcher 2\Plain Craft Launcher 2.vbproj" -p:Configuration=${{ matrix.configuration }} -verbosity:minimal -nologo
+
+    - name: Verify Compiled Credentials
+      if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+      shell: powershell
+      env:
+        PCL_MS_CLIENT_ID: ${{ secrets.PCL_MS_CLIENT_ID }}
+        PCL_CF_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+      run: .\.github\scripts\verify_build_credentials.ps1 -AssemblyPath "Plain Craft Launcher 2\obj\${{ matrix.configuration }}\Plain Craft Launcher 2.exe"
+
+    - name: Remove Private Build Source
+      if: always()
+      run: python .github/scripts/build_credentials.py --clean
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v7
       with:
         name: ${{ matrix.configuration }} ${{ env.describe }}
         path: Plain Craft Launcher 2\obj\${{ matrix.configuration }}\Plain Craft Launcher 2.exe
+        if-no-files-found: error
