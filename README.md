@@ -1,4 +1,10 @@
-# Plain Craft Launcher
+# Plain Craft Launcher (PCL) Download 修改版
+
+本仓库由第三方基于 [Plain Craft Launcher](https://github.com/Meloong-Git/PCL) 独立修改，不是 PCL 官方版本。本修改版恢复 Minecraft 下载与整合包安装等入口；原作者为龙腾猫跃，欢迎[支持原作者](https://meloong.com/afd/a/LTCat)。
+
+修改范围、构建和验收说明见 [下载功能恢复说明](docs/download-restoration.md)。使用及分发须遵循仓库 [LICENCE](LICENCE) 及其链接的许可；请勿把本修改版与官方发行版混淆。
+
+以下保留上游项目介绍与资源。
 
 [![Stars](https://img.shields.io/github/stars/Meloong-Git/PCL?style=flat&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PHBhdGggZD0iTTggLjI1YS43NS43NSAwIDAgMSAuNjczLjQxOGwxLjg4MiAzLjgxNSA0LjIxLjYxMmEuNzUuNzUgMCAwIDEgLjQxNiAxLjI3OWwtMy4wNDYgMi45Ny43MTkgNC4xOTJhLjc1MS43NTEgMCAwIDEtMS4wODguNzkxTDggMTIuMzQ3bC0zLjc2NiAxLjk4YS43NS43NSAwIDAgMS0xLjA4OC0uNzlsLjcyLTQuMTk0TC44MTggNi4zNzRhLjc1Ljc1IDAgMCAxIC40MTYtMS4yOGw0LjIxLS42MTFMNy4zMjcuNjY4QS43NS43NSAwIDAgMSA4IC4yNVoiIGZpbGw9IiNlYWM1NGYiLz48L3N2Zz4=&logoSize=auto&label=Stars&labelColor=444444&color=eac54f)](https://github.com/Meloong-Git/PCL/)
 [![Issues](https://img.shields.io/github/issues/Meloong-Git/PCL?style=flat&label=Issues&labelColor=444444&color=1F883D)](https://github.com/Meloong-Git/PCL/issues)
